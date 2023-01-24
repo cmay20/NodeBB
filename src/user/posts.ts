@@ -32,13 +32,12 @@ module.exports = function (User) {
 
         const now = Date.now();
         if (userData.mutedUntil > now) {
-            let muteLeft: number = ((userData.mutedUntil - now) / (1000 * 60));
+            let muteLeft = ((userData.mutedUntil - now) / (1000 * 60));
             if (muteLeft > 60) {
-                let muteLeftStr = (muteLeft / 60).toFixed(0);
-                throw new Error(`[[error:user-muted-for-hours, ${muteLeftStr}]]`);
+                muteLeft = +(muteLeft / 60).toFixed(0);
+                throw new Error(`[[error:user-muted-for-hours, ${muteLeft}]]`);
             } else {
-                let muteLeftStr = muteLeft.toFixed(0);
-                throw new Error(`[[error:user-muted-for-minutes, ${muteLeftStr}]]`);
+                throw new Error(`[[error:user-muted-for-minutes, ${+muteLeft.toFixed(0)}]]`);
             }
         }
 
