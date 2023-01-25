@@ -1,23 +1,24 @@
-// import db from '../database';
+import db from '../database';
 
-import db = require('../database');
+// import db = require('../database');
 
-// import meta from '../meta';
-import meta = require('../meta');
+import meta from '../meta';
+// import meta = require('../meta');
 
-// import privileges from '../privileges';
-import privileges = require('../privileges');
+import privileges from '../privileges';
+// import privileges = require('../privileges');
 
-import user = require('../user'); // I added this...
+import user from '.';
+// import user = require('../user'); // I added this...
 
 // module.exports = function (User: user) {
 export default function (User: user) {
-    // type userDataType = {
-    //  uid: string,
-    //  mutedUntil: number,
-    //  joindate: number,
-    //  reputation: number
-    // }
+    type userDataType = {
+        uid: string,
+        mutedUntil: number,
+        joindate: number,
+        reputation: number
+    }
 
     async function isReady(uid: string, cid: string[], field: string) {
         if (parseInt(uid, 10) === 0) {
@@ -28,7 +29,7 @@ export default function (User: user) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             User.getUserFields(uid, ['uid', 'mutedUntil', 'joindate', 'email', 'reputation'].concat([field])),
             privileges.categories.isAdminOrMod(cid, uid),
-        ]);
+        ]) as [userDataType, boolean];
 
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -57,14 +58,31 @@ export default function (User: user) {
 
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const initialpostdelay: number = meta.config.initialPostDelay as number;
+
+
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (now - userData.joindate < meta.config.initialPostDelay * 1000) {
             // The next line calls a function in a module that has not been updated to TS yet
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            throw new Error(`[[error:user-too-new, ${meta.config.initialPostDelay}]]`);
+            throw new Error(`[[error:user-too-new, ${initialpostdelay}]]`);
         }
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const lasttime = userData[field] || 0;
+        const lasttime = userData[field] as number || 0;
+
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const newbiepostdelay: number = meta.config.newbiePostDelay as number;
+
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const newbiepostdelaythreshold: number = meta.config.newbiePostDelayThreshold as number;
+
+        // The next line calls a function in a module that has not been updated to TS yet
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const postdelay: number = meta.config.postDelay as number;
 
         if (
             // The next line calls a function in a module that has not been updated to TS yet
@@ -79,13 +97,13 @@ export default function (User: user) {
         ) {
             // The next line calls a function in a module that has not been updated to TS yet
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            throw new Error(`[[error:too-many-posts-newbie, ${meta.config.newbiePostDelay}, ${meta.config.newbiePostDelayThreshold}]]`);
+            throw new Error(`[[error:too-many-posts-newbie, ${newbiepostdelay}, ${newbiepostdelaythreshold}]]`);
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         } else if (now - lasttime < meta.config.postDelay * 1000) {
             // The next line calls a function in a module that has not been updated to TS yet
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            throw new Error(`[[error:too-many-posts, ${meta.config.postDelay}]]`);
+            throw new Error(`[[error:too-many-posts, ${postdelay}]]`);
         }
     }
 
@@ -147,7 +165,7 @@ export default function (User: user) {
         uids = Array.isArray(uids) ? uids : [uids];
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        const exists = await User.exists(uids);
+        const exists = await User.exists(uids) as boolean;
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         uids = uids.filter((uid, index) => exists[index]);
@@ -211,6 +229,6 @@ export default function (User: user) {
     User.getPostIds = async function (uid: string, start, stop) {
         // The next line calls a function in a module that has not been updated to TS yet
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-        return await db.getSortedSetRevRange(`uid:${uid}:posts`, start, stop);
+        return await db.getSortedSetRevRange(`uid:${uid}:posts`, start, stop) as number;
     };
 }
