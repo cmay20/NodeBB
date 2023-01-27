@@ -1,8 +1,6 @@
 'use strict';
 
-const testblah = require('lodash');
-// import testblah from "lodash";
-
+const _ = require('lodash');
 const groups = require('../groups');
 const plugins = require('../plugins');
 const db = require('../database');
@@ -71,7 +69,7 @@ User.getUsersFromSet = async function (set, uid, start, stop) {
 
 User.getUsersWithFields = async function (uids, fields, uid) {
     let results = await plugins.hooks.fire('filter:users.addFields', { fields: fields });
-    results.fields = testblah.uniq(results.fields);
+    results.fields = _.uniq(results.fields);
     const userData = await User.getUsersFields(uids, results.fields);
     results = await plugins.hooks.fire('filter:userlist.get', { users: userData, uid: uid });
     return results.users;
@@ -202,7 +200,7 @@ async function isSelfOrMethod(callerUid, uid, method) {
 
 User.getAdminsandGlobalMods = async function () {
     const results = await groups.getMembersOfGroups(['administrators', 'Global Moderators']);
-    return await User.getUsersData(testblah.union(...results));
+    return await User.getUsersData(_.union(...results));
 };
 
 User.getAdminsandGlobalModsandModerators = async function () {
@@ -211,7 +209,7 @@ User.getAdminsandGlobalModsandModerators = async function () {
         groups.getMembers('Global Moderators', 0, -1),
         User.getModeratorUids(),
     ]);
-    return await User.getUsersData(testblah.union(...results));
+    return await User.getUsersData(_.union(...results));
 };
 
 User.getFirstAdminUid = async function () {
@@ -221,7 +219,7 @@ User.getFirstAdminUid = async function () {
 User.getModeratorUids = async function () {
     const cids = await categories.getAllCidsFromSet('categories:cid');
     const uids = await categories.getModeratorUids(cids);
-    return testblah.union(...uids);
+    return _.union(...uids);
 };
 
 User.getModeratedCids = async function (uid) {

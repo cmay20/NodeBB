@@ -12,7 +12,8 @@ import user from '.';
 // import user = require('../user'); // I added this...
 
 // module.exports = function (User: user) {
-export default function (User: user) {
+// export default function (User: user) {
+export = function (User: user) {
     type userDataType = {
         uid: string,
         mutedUntil: number,
@@ -109,13 +110,13 @@ export default function (User: user) {
 
     // The next line calls a function in a module that has not been updated to TS yet
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    User.isReadyToPost = async function (uid: string, cid: string[]) {
+    User.isReadyToPost = async function (uid: string, cid: string[]) { // (uid: string, cid: string[]) {
         await isReady(uid, cid, 'lastposttime');
     };
 
     // The next line calls a function in a module that has not been updated to TS yet
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    User.isReadyToQueue = async function (uid: string, cid: string[]) {
+    User.isReadyToQueue = async function (uid: string, cid: string[]) { // (uid: string, cid: string[]) {
         await isReady(uid, cid, 'lastqueuetime');
     };
 
