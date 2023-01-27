@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const database_1 = __importDefault(require("../database"));
-// import db = require('../database');
 const meta_1 = __importDefault(require("../meta"));
-// import meta = require('../meta');
 const privileges_1 = __importDefault(require("../privileges"));
 module.exports = function (User) {
     async function isReady(uid, cid, field) {

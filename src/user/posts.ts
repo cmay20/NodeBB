@@ -1,18 +1,11 @@
 import db from '../database';
 
-// import db = require('../database');
-
 import meta from '../meta';
-// import meta = require('../meta');
 
 import privileges from '../privileges';
-// import privileges = require('../privileges');
 
 import user from '.';
-// import user = require('../user'); // I added this...
 
-// module.exports = function (User: user) {
-// export default function (User: user) {
 export = function (User: user) {
     type userDataType = {
         uid: string,
